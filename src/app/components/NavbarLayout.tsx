@@ -3,21 +3,24 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import { useAuth } from "../../hooks/useAuth";
 import { CustomerAuthModal } from "./CustomerAuthModal";
+import { ChangePasswordModal } from "./ChangePasswordModal";
 
 export default function NavbarLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn, user, login, logout } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [authTab, setAuthTab] = useState<"login" | "signup">("login");
 
-  // Auth modal is NEVER triggered from nav buttons (RULE 3)
-  // It is ONLY triggered by "Schedule a Visit" in ListingPage
   const handleLoginClick = useCallback(() => {
-    // No-op: auth is only triggered by "Schedule a Visit" (RULE 3)
+    setAuthTab("login");
+    setShowAuthModal(true);
   }, []);
 
   const handleSignupClick = useCallback(() => {
-    // No-op: auth is only triggered by "Schedule a Visit" (RULE 3)
+    setAuthTab("signup");
+    setShowAuthModal(true);
   }, []);
 
   const handleAuthSuccess = useCallback((name: string, email: string) => {
@@ -30,9 +33,13 @@ export default function NavbarLayout() {
     navigate("/");
   }, [logout, navigate]);
 
+  const handleChangePassword = useCallback(() => {
+    setShowChangePassword(true);
+  }, []);
+
   const handleNavigate = useCallback((page: string) => {
     const routeMap: Record<string, string> = {
-      home: "/",
+      home: "/home",
       listings: "/properties",
       about: "/about",
       contact: "/contact",
@@ -42,6 +49,7 @@ export default function NavbarLayout() {
 
   const path = location.pathname;
   const currentPage = path === "/" ? "home" :
+    path.startsWith("/home") ? "home" :
     path.startsWith("/properties") ? "listings" :
     path.startsWith("/about") ? "about" :
     path.startsWith("/contact") ? "contact" : "home";
@@ -54,6 +62,8 @@ export default function NavbarLayout() {
           onLoginClick={handleLoginClick}
           onSignupClick={handleSignupClick}
           onLogout={handleLogout}
+          onChangePassword={handleChangePassword}
+          onLogoClick={() => navigate("/")}
           currentPage={currentPage}
           onNavigate={handleNavigate}
         />
@@ -63,8 +73,15 @@ export default function NavbarLayout() {
       </div>
       {showAuthModal && (
         <CustomerAuthModal
+          initialTab={authTab}
           onLogin={handleAuthSuccess}
           onClose={() => setShowAuthModal(false)}
+        />
+      )}
+      {showChangePassword && (
+        <ChangePasswordModal
+          email={user?.email ?? ""}
+          onClose={() => setShowChangePassword(false)}
         />
       )}
     </>

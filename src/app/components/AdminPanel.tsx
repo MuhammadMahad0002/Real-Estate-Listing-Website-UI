@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Home, Building2, MapPin, Users, Calendar,
   Eye, LogOut, ArrowLeft, Plus, MoreHorizontal, CheckCircle,
   Clock, TrendingUp, TrendingDown, Phone, Star, Filter,
-  Pencil, Trash2, BarChart2, UserCheck,
+  Pencil, Trash2, BarChart2, UserCheck, Lock,
 } from "lucide-react";
 import { motion } from "motion/react";
 import {
@@ -16,6 +16,8 @@ interface AdminPanelProps {
   userName: string | null;
   onLogout: () => void;
   onBack: () => void;
+  onNavigateHome?: () => void;
+  onChangePassword?: () => void;
 }
 
 type Tab = "dashboard" | "properties" | "agents" | "visits" | "add";
@@ -101,7 +103,7 @@ const NAV = [
 /* ═══════════════════════════════════════════════════════════
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════ */
-export function AdminPanel({ userName, onLogout, onBack }: AdminPanelProps) {
+export function AdminPanel({ userName, onLogout, onBack, onNavigateHome, onChangePassword }: AdminPanelProps) {
   const [tab, setTab] = useState<Tab>("dashboard");
   const [statusFilter, setStatusFilter] = useState<string>("All");
 
@@ -110,8 +112,8 @@ export function AdminPanel({ userName, onLogout, onBack }: AdminPanelProps) {
 
       {/* ── SIDEBAR ────────────────────────────────── */}
       <aside className="w-60 flex-shrink-0 flex flex-col sticky top-0 h-screen overflow-y-auto" style={{ background: "#0A1628" }}>
-        {/* Logo */}
-        <div className="px-5 pt-6 pb-5 border-b border-white/10 flex-shrink-0">
+        {/* Logo — clickable to go to split landing page */}
+        <button onClick={onNavigateHome} className="w-full px-5 pt-6 pb-5 border-b border-white/10 flex-shrink-0 text-left">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#D4A853] flex items-center justify-center flex-shrink-0">
               <Home className="w-4 h-4 text-[#0A1628]" />
@@ -123,7 +125,7 @@ export function AdminPanel({ userName, onLogout, onBack }: AdminPanelProps) {
           <p className="text-white/30 text-xs mt-1 ml-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>
             Admin Dashboard
           </p>
-        </div>
+        </button>
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5">
@@ -167,6 +169,9 @@ export function AdminPanel({ userName, onLogout, onBack }: AdminPanelProps) {
               <p className="text-white/35 text-xs" style={{ fontFamily: "'Inter', sans-serif" }}>Property Agent</p>
             </div>
           </div>
+          <button onClick={onChangePassword} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-white/40 hover:text-[#D4A853] hover:bg-[#D4A853]/10 text-xs transition-all" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <Lock className="w-3.5 h-3.5" />Change Password
+          </button>
           <button onClick={onBack} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-white/40 hover:text-white/70 text-xs transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>
             <ArrowLeft className="w-3.5 h-3.5" />Back to Home
           </button>

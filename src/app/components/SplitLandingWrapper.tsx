@@ -34,7 +34,7 @@ export default function SplitLandingWrapper() {
   return (
     <>
       <SplitLanding
-        onExplore={() => navigate("/properties")}
+        onExplore={() => navigate("/home")}
         onAdmin={() => {
           if (isAdminLoggedIn) {
             navigate("/admin");

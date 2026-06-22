@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Lock, Mail, Eye, EyeOff, ShieldAlert } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { getStoredAdminPassword } from "../../utils/passwordUtils";
 
 interface AdminLoginModalProps {
   onLogin: (name: string) => void;
@@ -8,7 +9,6 @@ interface AdminLoginModalProps {
 }
 
 const ADMIN_EMAIL = "admin@realty.com";
-const ADMIN_PASSWORD = "Admin@1234";
 
 export function AdminLoginModal({ onLogin, onClose }: AdminLoginModalProps) {
   const [email, setEmail] = useState("");
@@ -28,7 +28,7 @@ export function AdminLoginModal({ onLogin, onClose }: AdminLoginModalProps) {
       setError("Password is required.");
       return;
     }
-    if (email.trim() !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+    if (email.trim() !== ADMIN_EMAIL || password !== getStoredAdminPassword()) {
       setError("Invalid email or password. Please try again.");
       return;
     }

@@ -22,8 +22,9 @@ export default function App() {
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/" element={<SplitLanding />} />
-            {/* /home redirects to the split screen — no bypass allowed */}
-            <Route path="/home" element={<Navigate to="/" replace />} />
+            <Route path="/home" element={<NavbarLayout />}>
+              <Route index element={<HomePage />} />
+            </Route>
             <Route path="/properties" element={<NavbarLayout />}>
               <Route index element={
                 <ErrorBoundary>

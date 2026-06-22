@@ -2,13 +2,16 @@ import { useState } from "react";
 import { X, Mail, Lock, User, Phone, Eye, EyeOff } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
+import { setCustomerPassword, getCustomerPassword } from "../../utils/passwordUtils";
+
 interface CustomerAuthModalProps {
   onLogin: (name: string, email: string) => void;
   onClose: () => void;
+  initialTab?: "login" | "signup";
 }
 
-export function CustomerAuthModal({ onLogin, onClose }: CustomerAuthModalProps) {
-  const [tab, setTab] = useState<"login" | "signup">("login");
+export function CustomerAuthModal({ onLogin, onClose, initialTab }: CustomerAuthModalProps) {
+  const [tab, setTab] = useState<"login" | "signup">(initialTab ?? "login");
 
   // Login fields
   const [loginEmail, setLoginEmail] = useState("");
@@ -37,6 +40,17 @@ export function CustomerAuthModal({ onLogin, onClose }: CustomerAuthModalProps) 
       return;
     }
 
+    // Verify stored password
+    const storedPassword = getCustomerPassword(loginEmail.trim());
+    if (!storedPassword) {
+      setLoginError("No account found with this email. Please sign up first.");
+      return;
+    }
+    if (loginPassword !== storedPassword) {
+      setLoginError("Incorrect password. Try again.");
+      return;
+    }
+
     onLogin(loginEmail.split("@")[0], loginEmail.trim());
   };
 
@@ -61,6 +75,8 @@ export function CustomerAuthModal({ onLogin, onClose }: CustomerAuthModalProps) 
       return;
     }
 
+    // Store password for future login verification
+    setCustomerPassword(signupEmail.trim(), signupPassword);
     onLogin(fullName.trim(), signupEmail.trim());
   };
 

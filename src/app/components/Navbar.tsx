@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { Home, User, LogOut, Menu, X } from "lucide-react";
+import { Home, User, LogOut, Lock, Menu, X } from "lucide-react";
 
 interface NavbarProps {
   userName: string | null;
   onLoginClick: () => void;
   onSignupClick: () => void;
   onLogout: () => void;
+  onChangePassword: () => void;
   currentPage: string;
   onNavigate: (page: string) => void;
+  onLogoClick: () => void;
 }
 
 export function Navbar({
@@ -15,8 +17,10 @@ export function Navbar({
   onLoginClick,
   onSignupClick,
   onLogout,
+  onChangePassword,
   currentPage,
   onNavigate,
+  onLogoClick,
 }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -47,9 +51,9 @@ export function Navbar({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Logo — always goes to first page (/) */}
           <button
-            onClick={() => onNavigate("home")}
+            onClick={onLogoClick}
             className="flex items-center gap-2 flex-shrink-0"
           >
             <div className="w-8 h-8 rounded-lg bg-[#D4A853] flex items-center justify-center">
@@ -90,7 +94,7 @@ export function Navbar({
             })}
           </div>
 
-      {/* Auth Buttons — only show when logged in (RULE 3: no auth prompts from nav) */}
+      {/* Auth Buttons at top-right */}
       <div className="hidden md:flex items-center gap-3">
         {userName ? (
           <div className="relative">
@@ -109,7 +113,16 @@ export function Navbar({
               </span>
             </button>
             {userMenu && (
-              <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
+                <button
+                  onClick={() => { setUserMenu(false); onChangePassword(); }}
+                  className="w-full flex items-center gap-2 px-4 py-3 text-sm text-[#0A1628] hover:bg-gray-50 transition-colors"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 500 }}
+                >
+                  <Lock className="w-4 h-4" />
+                  Change Password
+                </button>
+                <hr className="border-gray-100" />
                 <button
                   onClick={() => { setUserMenu(false); onLogout(); }}
                   className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
@@ -122,7 +135,22 @@ export function Navbar({
             )}
           </div>
         ) : (
-          <div />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onLoginClick}
+              className="px-4 py-2 rounded-lg text-white border border-white/30 hover:bg-white/10 transition-all text-sm"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600 }}
+            >
+              Sign In
+            </button>
+            <button
+              onClick={onSignupClick}
+              className="px-4 py-2 rounded-lg text-[#0A1628] text-sm transition-all hover:brightness-110"
+              style={{ background: "#D4A853", fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700 }}
+            >
+              Sign Up
+            </button>
+          </div>
         )}
       </div>
 
