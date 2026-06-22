@@ -440,6 +440,17 @@ export function PropertyDetailModal({ property, onClose, onSchedule }: Props) {
             className="fixed inset-0 z-[70] flex items-center justify-center bg-black/95"
             onClick={() => setLightbox(null)}
           >
+            {/* Close button — always top-right corner, independent of image content */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightbox(null);
+              }}
+              className="fixed top-4 right-4 z-[80] w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/40 transition-colors shadow-lg backdrop-blur-sm"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -453,12 +464,6 @@ export function PropertyDetailModal({ property, onClose, onSchedule }: Props) {
                 alt={`Photo ${lightbox + 1}`}
                 className="w-full max-h-[85vh] object-contain rounded-xl"
               />
-              <button
-                onClick={() => setLightbox(null)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/15 text-white flex items-center justify-center hover:bg-white/30 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
               {lightbox > 0 && (
                 <button
                   onClick={() => setLightbox((n) => n! - 1)}
