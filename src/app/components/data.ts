@@ -1,0 +1,489 @@
+export interface Property {
+  id: number;
+  title: string;
+  price: number;
+  priceLabel: string;
+  location: string;
+  city: string;
+  beds: number;
+  baths: number;
+  area: number;
+  areaUnit: "Marla" | "Kanal" | "Sqft";
+  type: "House" | "Apartment" | "Plot" | "Commercial";
+  furnishing: "Furnished" | "Semi-Furnished" | "Unfurnished";
+  description: string;
+  shortDescription: string;
+  image: string;
+  images: string[];
+  features: string[];
+  agentName: string;
+  agentPhone: string;
+  agentImage: string;
+  lat: number;
+  lng: number;
+}
+
+export const PROPERTIES: Property[] = [
+  {
+    id: 1,
+    title: "Luxurious 5-Marla House in DHA Phase 6",
+    price: 28500000,
+    priceLabel: "PKR 2.85 Crore",
+    location: "DHA Phase 6, Lahore",
+    city: "Lahore",
+    beds: 4,
+    baths: 4,
+    area: 5,
+    areaUnit: "Marla",
+    type: "House",
+    furnishing: "Furnished",
+    description:
+      "A stunning 5-Marla house nestled in the prestigious DHA Phase 6, Lahore. This fully furnished property boasts modern architecture with high-end finishes throughout. The ground floor features a spacious drawing and dining area, a fully equipped kitchen, and a bedroom with ensuite bath. Three additional bedrooms are located upstairs, including a master suite with a walk-in closet. The property comes with a beautiful rooftop terrace, perfect for family gatherings.",
+    shortDescription:
+      "Stunning 5-Marla fully furnished house in prestigious DHA Phase 6 with modern finishes and rooftop terrace.",
+    image:
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1560185127-6d03f9b8c7a3?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: ["Parking", "Garden", "Security", "Generator", "CCTV", "Solar"],
+    agentName: "Tariq Mehmood",
+    agentPhone: "+92-321-4567890",
+    agentImage:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&auto=format",
+    lat: 31.4683,
+    lng: 74.4023,
+  },
+  {
+    id: 2,
+    title: "Modern 10-Marla Corner House in Bahria Town",
+    price: 45000000,
+    priceLabel: "PKR 4.5 Crore",
+    location: "Bahria Town, Rawalpindi",
+    city: "Rawalpindi",
+    beds: 5,
+    baths: 5,
+    area: 10,
+    areaUnit: "Marla",
+    type: "House",
+    furnishing: "Semi-Furnished",
+    description:
+      "An exceptional 10-Marla corner house in Bahria Town Rawalpindi. This semi-furnished property features a double-height entrance lobby, spacious living areas with Italian marble flooring, and a state-of-the-art modular kitchen. The master bedroom suite occupies the entire top floor, offering panoramic views of the lush Bahria Town landscape. Four additional bedrooms with attached baths provide ample space for a large family. The triple-car garage and beautifully landscaped garden complete this package.",
+    shortDescription:
+      "Impressive 10-Marla corner house in Bahria Town with Italian marble, double-height lobby and triple-car garage.",
+    image:
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: [
+      "Parking (3 Cars)",
+      "Garden",
+      "Security Guard",
+      "Generator",
+      "CCTV",
+      "Solar Panels",
+      "Servant Quarter",
+    ],
+    agentName: "Sana Khalid",
+    agentPhone: "+92-300-9876543",
+    agentImage:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&auto=format",
+    lat: 33.5651,
+    lng: 73.0169,
+  },
+  {
+    id: 3,
+    title: "Premium 3-Bed Apartment in Clifton",
+    price: 32000000,
+    priceLabel: "PKR 3.2 Crore",
+    location: "Clifton Block 5, Karachi",
+    city: "Karachi",
+    beds: 3,
+    baths: 3,
+    area: 2200,
+    areaUnit: "Sqft",
+    type: "Apartment",
+    furnishing: "Furnished",
+    description:
+      "A luxurious sea-facing apartment in the iconic Clifton Block 5, Karachi. This fully furnished 2,200 sqft residence offers breathtaking views of the Arabian Sea from its wraparound balcony. The open-plan living and dining space is designed for modern living with floor-to-ceiling windows flooding every room with natural light. The chef's kitchen features imported cabinetry and top-of-the-line appliances. Building amenities include a rooftop infinity pool, gym, and 24/7 security.",
+    shortDescription:
+      "Sea-facing luxury apartment in Clifton with Arabian Sea views, rooftop pool and modern open-plan design.",
+    image:
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: [
+      "Parking",
+      "Swimming Pool",
+      "Gym",
+      "24/7 Security",
+      "CCTV",
+      "Backup Generator",
+      "Balcony",
+    ],
+    agentName: "Faraz Ahmed",
+    agentPhone: "+92-333-1234567",
+    agentImage:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&auto=format",
+    lat: 24.8138,
+    lng: 67.0347,
+  },
+  {
+    id: 4,
+    title: "Residential Plot 1-Kanal in F-7",
+    price: 75000000,
+    priceLabel: "PKR 7.5 Crore",
+    location: "F-7/2, Islamabad",
+    city: "Islamabad",
+    beds: 0,
+    baths: 0,
+    area: 1,
+    areaUnit: "Kanal",
+    type: "Plot",
+    furnishing: "Unfurnished",
+    description:
+      "A prime 1-Kanal residential plot in the most sought-after location of Islamabad — F-7/2. This flat, level plot offers 40-foot road access and is surrounded by established residences. The area enjoys 24-hour electricity with no load-shedding, underground utilities, and mature tree-lined streets. All paperwork is complete with Islamabad Capital Territory approvals in order. This is a rare opportunity to build your dream home in one of Pakistan's most prestigious addresses.",
+    shortDescription:
+      "Prime 1-Kanal plot in prestigious F-7/2 Islamabad with 40-ft road, all approvals complete, zero load-shedding.",
+    image:
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: [
+      "Corner Plot",
+      "40-ft Road",
+      "Utilities Connected",
+      "All Approved",
+    ],
+    agentName: "Imran Shah",
+    agentPhone: "+92-311-5551234",
+    agentImage:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&auto=format",
+    lat: 33.7215,
+    lng: 73.0579,
+  },
+  {
+    id: 5,
+    title: "Commercial Space in Gulberg III",
+    price: 120000000,
+    priceLabel: "PKR 12 Crore",
+    location: "Gulberg III, MM Alam Road, Lahore",
+    city: "Lahore",
+    beds: 0,
+    baths: 2,
+    area: 4500,
+    areaUnit: "Sqft",
+    type: "Commercial",
+    furnishing: "Unfurnished",
+    description:
+      "A rare 4,500 sqft commercial floor plate on the iconic MM Alam Road, Gulberg III — Lahore's premier retail and business corridor. This bare-shell space on the 3rd floor of a newly constructed Grade-A building offers column-free layout, 14-foot ceiling height, and full-height glazed frontage. The building provides 3-phase electricity, fiber optic connectivity, dedicated parking for 20 vehicles, and a food court on the ground floor. Ideal for corporate offices, showrooms, or restaurants.",
+    shortDescription:
+      "4,500 sqft bare-shell commercial space on MM Alam Road with column-free layout and 14-ft ceiling height.",
+    image:
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: [
+      "Parking (20 Cars)",
+      "3-Phase Electricity",
+      "Fiber Optic",
+      "CCTV",
+      "Elevator",
+      "24/7 Security",
+    ],
+    agentName: "Nadia Akhtar",
+    agentPhone: "+92-300-7778899",
+    agentImage:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&auto=format",
+    lat: 31.5089,
+    lng: 74.3397,
+  },
+  {
+    id: 6,
+    title: "Cozy 3-Marla House in Johar Town",
+    price: 12500000,
+    priceLabel: "PKR 1.25 Crore",
+    location: "Johar Town Phase 2, Lahore",
+    city: "Lahore",
+    beds: 3,
+    baths: 2,
+    area: 3,
+    areaUnit: "Marla",
+    type: "House",
+    furnishing: "Unfurnished",
+    description:
+      "A well-maintained 3-Marla double-story house in the family-friendly Johar Town Phase 2. The ground floor comprises a comfortable lounge, dining area, kitchen, and a single bedroom. Two more bedrooms with attached baths are located upstairs. The property benefits from a small but well-kept front garden and dedicated covered parking. Gas, electricity, and municipal water connections are all in order. Johar Town offers excellent access to Lahore's commercial centers and top educational institutions.",
+    shortDescription:
+      "Well-maintained 3-Marla double-story house in family-friendly Johar Town with parking and a front garden.",
+    image:
+      "https://images.unsplash.com/photo-1598228723793-52759bba239c?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1598228723793-52759bba239c?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1560185127-6d03f9b8c7a3?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: ["Parking", "Garden", "Gas Connection", "Water Connection"],
+    agentName: "Usman Raza",
+    agentPhone: "+92-345-6543210",
+    agentImage:
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop&auto=format",
+    lat: 31.4712,
+    lng: 74.2741,
+  },
+  {
+    id: 7,
+    title: "Studio Apartment in Bahria Heights",
+    price: 6800000,
+    priceLabel: "PKR 68 Lakh",
+    location: "Bahria Heights, Bahria Town, Rawalpindi",
+    city: "Rawalpindi",
+    beds: 1,
+    baths: 1,
+    area: 550,
+    areaUnit: "Sqft",
+    type: "Apartment",
+    furnishing: "Furnished",
+    description:
+      "A smartly designed furnished studio apartment in the well-maintained Bahria Heights community. At 550 sqft, this space maximizes every inch with a built-in study, Murphy bed, and compact but fully equipped kitchen. The apartment comes with split AC, LED lighting throughout, and a private balcony overlooking the community park. Bahria Heights residents enjoy access to a shared gym, rooftop recreation area, and round-the-clock security. Ideal for young professionals or as a rental investment.",
+    shortDescription:
+      "Smart furnished studio in Bahria Heights with Murphy bed, balcony, and access to gym — ideal for investors.",
+    image:
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: [
+      "Parking",
+      "Gym",
+      "Balcony",
+      "24/7 Security",
+      "CCTV",
+      "Generator",
+    ],
+    agentName: "Zara Hussain",
+    agentPhone: "+92-312-9990001",
+    agentImage:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&auto=format",
+    lat: 33.5534,
+    lng: 73.0823,
+  },
+  {
+    id: 8,
+    title: "Spacious 1-Kanal Bungalow in Cantt",
+    price: 95000000,
+    priceLabel: "PKR 9.5 Crore",
+    location: "Cantt Area, Lahore",
+    city: "Lahore",
+    beds: 6,
+    baths: 6,
+    area: 1,
+    areaUnit: "Kanal",
+    type: "House",
+    furnishing: "Semi-Furnished",
+    description:
+      "A distinguished 1-Kanal bungalow in the serene Lahore Cantt, one of Pakistan's most coveted residential addresses. This heritage-style property blends classical architecture with modern conveniences. The ground floor features a grand drawing room, formal dining, family lounge, and chef's kitchen with pantry. Upstairs, five bedrooms all with attached baths and walk-in closets surround a central family lounge. The sprawling mature garden includes a covered outdoor dining area, water feature, and separate servant quarters.",
+    shortDescription:
+      "Distinguished 1-Kanal bungalow in Lahore Cantt blending heritage architecture with modern amenities and lush gardens.",
+    image:
+      "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: [
+      "Parking (4 Cars)",
+      "Mature Garden",
+      "Security Guard",
+      "Generator",
+      "Solar",
+      "CCTV",
+      "Servant Quarter",
+      "Water Feature",
+    ],
+    agentName: "Kamran Malik",
+    agentPhone: "+92-321-1112222",
+    agentImage:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&auto=format",
+    lat: 31.5204,
+    lng: 74.3587,
+  },
+  {
+    id: 9,
+    title: "2-Bed Apartment in DHA Karachi",
+    price: 18500000,
+    priceLabel: "PKR 1.85 Crore",
+    location: "DHA Phase 6, Karachi",
+    city: "Karachi",
+    beds: 2,
+    baths: 2,
+    area: 1400,
+    areaUnit: "Sqft",
+    type: "Apartment",
+    furnishing: "Semi-Furnished",
+    description:
+      "A beautifully appointed 1,400 sqft apartment in DHA Phase 6, Karachi's most modern residential enclave. This semi-furnished unit features an open kitchen with granite counters, a spacious living area with oak wood flooring, and two generously sized bedrooms with fitted wardrobes. The master bedroom has an attached bath with imported fixtures. Building facilities include a community pool, dedicated parking, underground power supply, and professional management. Located minutes from Dolmen Mall and Karachi's top schools.",
+    shortDescription:
+      "Well-appointed 1,400 sqft apartment in DHA Phase 6 Karachi near Dolmen Mall with pool and underground power.",
+    image:
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: [
+      "Parking",
+      "Swimming Pool",
+      "24/7 Security",
+      "Generator",
+      "CCTV",
+    ],
+    agentName: "Asim Khan",
+    agentPhone: "+92-303-4445556",
+    agentImage:
+      "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&auto=format",
+    lat: 24.7917,
+    lng: 67.0595,
+  },
+  {
+    id: 10,
+    title: "Commercial Plot in Blue Area",
+    price: 200000000,
+    priceLabel: "PKR 20 Crore",
+    location: "Blue Area, Islamabad",
+    city: "Islamabad",
+    beds: 0,
+    baths: 0,
+    area: 8,
+    areaUnit: "Marla",
+    type: "Plot",
+    furnishing: "Unfurnished",
+    description:
+      "An extraordinary 8-Marla commercial plot in the prime Blue Area of Islamabad — the capital's central business district. This corner plot on a 60-foot road offers maximum visibility and footfall. All NOCs and CDA approvals are current. The area benefits from uninterrupted commercial activity, proximity to government buildings, embassies, and Islamabad's top hotels. Blue Area plots of this caliber rarely appear on the open market — this is a generational investment opportunity.",
+    shortDescription:
+      "Rare 8-Marla corner commercial plot in Blue Area Islamabad on 60-ft road with all CDA approvals — exceptional investment.",
+    image:
+      "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: [
+      "Corner Plot",
+      "60-ft Road",
+      "CDA Approved",
+      "All Utilities",
+      "Commercial Zone",
+    ],
+    agentName: "Bilal Chaudhry",
+    agentPhone: "+92-322-7778889",
+    agentImage:
+      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop&auto=format",
+    lat: 33.7294,
+    lng: 73.0932,
+  },
+  {
+    id: 11,
+    title: "4-Bed House in Gulshan-e-Iqbal",
+    price: 22000000,
+    priceLabel: "PKR 2.2 Crore",
+    location: "Gulshan-e-Iqbal Block 13, Karachi",
+    city: "Karachi",
+    beds: 4,
+    baths: 3,
+    area: 240,
+    areaUnit: "Sqft",
+    type: "House",
+    furnishing: "Unfurnished",
+    description:
+      "A solid 240-sqyd house in the established and well-connected Gulshan-e-Iqbal Block 13. The property is built on a 40x60 plot and features a covered parking porch, a welcoming lounge, formal dining, and an efficient kitchen on the ground floor. Four bedrooms are arranged across the upper two floors, with three attached bathrooms. The rooftop offers additional usable space for a terrace garden or servant accommodation. Gulshan-e-Iqbal provides easy access to all major Karachi arterial routes.",
+    shortDescription:
+      "Solid 240-sqyd house in established Gulshan-e-Iqbal Block 13 with covered parking and rooftop space.",
+    image:
+      "https://images.unsplash.com/photo-1625602812206-5ec545ca1231?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1625602812206-5ec545ca1231?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: ["Parking", "Rooftop", "Gas Connection", "Water Connection"],
+    agentName: "Rukhsana Baig",
+    agentPhone: "+92-300-2223334",
+    agentImage:
+      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=100&h=100&fit=crop&auto=format",
+    lat: 24.9215,
+    lng: 67.0875,
+  },
+  {
+    id: 12,
+    title: "Penthouse in Centaurus Residences",
+    price: 180000000,
+    priceLabel: "PKR 18 Crore",
+    location: "F-8, Islamabad",
+    city: "Islamabad",
+    beds: 4,
+    baths: 5,
+    area: 5500,
+    areaUnit: "Sqft",
+    type: "Apartment",
+    furnishing: "Furnished",
+    description:
+      "The crown jewel of Islamabad real estate — a 5,500 sqft furnished penthouse in the iconic Centaurus Tower. Occupying the top floor with 360° views of the Margalla Hills, Islamabad's skyline, and the Faisal Mosque, this extraordinary residence is designed to the standards of a five-star hotel. Four palatial bedroom suites, a private cinema, wine cellar, chef's kitchen, and a wraparound terrace with a heated plunge pool define life at the top. Concierge service, valet parking, and private elevator access complete the experience.",
+    shortDescription:
+      "Iconic 5,500 sqft penthouse in Centaurus Tower with Margalla Hills views, private terrace, cinema and plunge pool.",
+    image:
+      "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&h=400&fit=crop&auto=format",
+    images: [
+      "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=500&fit=crop&auto=format",
+    ],
+    features: [
+      "Valet Parking",
+      "Private Pool",
+      "Cinema Room",
+      "Concierge",
+      "Private Elevator",
+      "24/7 Security",
+      "Gym & Spa",
+      "Panoramic Views",
+    ],
+    agentName: "Ahsan Mirza",
+    agentPhone: "+92-333-9876543",
+    agentImage:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&auto=format",
+    lat: 33.7194,
+    lng: 73.0479,
+  },
+];
+
+export const CITIES = [
+  "All Cities",
+  "Lahore",
+  "Karachi",
+  "Islamabad",
+  "Rawalpindi",
+  "Faisalabad",
+  "Multan",
+  "Peshawar",
+];
