@@ -9,7 +9,6 @@ import { ScheduleVisitModal } from "./components/ScheduleVisitModal";
 const SplitLanding = lazy(() => import("./components/SplitLandingWrapper"));
 const HomePage = lazy(() => import("./components/HomePageWrapper"));
 const ListingPage = lazy(() => import("./components/ListingPageWrapper"));
-const AuthPage = lazy(() => import("./components/AuthPageWrapper"));
 const AdminPanel = lazy(() => import("./components/AdminPanelWrapper"));
 const NavbarLayout = lazy(() => import("./components/NavbarLayout"));
 const SimplePage = lazy(() => import("./components/SimplePage"));
@@ -23,9 +22,8 @@ export default function App() {
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/" element={<SplitLanding />} />
-            <Route path="/home" element={<NavbarLayout />}>
-              <Route index element={<HomePage />} />
-            </Route>
+            {/* /home redirects to the split screen — no bypass allowed */}
+            <Route path="/home" element={<Navigate to="/" replace />} />
             <Route path="/properties" element={<NavbarLayout />}>
               <Route index element={
                 <ErrorBoundary>
@@ -39,7 +37,6 @@ export default function App() {
             <Route path="/contact" element={<NavbarLayout />}>
               <Route index element={<SimplePage />} />
             </Route>
-            <Route path="/auth" element={<AuthPage />} />
             <Route
               path="/admin"
               element={

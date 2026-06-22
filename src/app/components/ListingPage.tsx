@@ -13,7 +13,7 @@ const PER_PAGE = 6;
 
 interface ListingPageProps {
   userName: string | null;
-  onLoginRequired: () => void;
+  onLoginRequired: (property: Property) => void;
 }
 
 function ListingPageComponent({ userName, onLoginRequired }: ListingPageProps) {
@@ -68,7 +68,7 @@ function ListingPageComponent({ userName, onLoginRequired }: ListingPageProps) {
 
   const handleSchedule = useCallback((property: Property) => {
     if (!userName) {
-      onLoginRequired();
+      onLoginRequired(property);
       return;
     }
     setScheduleProperty(property);

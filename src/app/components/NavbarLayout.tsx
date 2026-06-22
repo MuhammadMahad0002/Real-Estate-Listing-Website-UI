@@ -1,52 +1,72 @@
+import { useState, useCallback } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import { useAuth } from "../../hooks/useAuth";
+import { CustomerAuthModal } from "./CustomerAuthModal";
 
 export default function NavbarLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoggedIn, user, logout } = useAuth();
+  const { isLoggedIn, user, login, logout } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
-  const handleLoginClick = () => {
-    navigate("/auth");
-  };
+  // Auth modal is NEVER triggered from nav buttons (RULE 3)
+  // It is ONLY triggered by "Schedule a Visit" in ListingPage
+  const handleLoginClick = useCallback(() => {
+    // No-op: auth is only triggered by "Schedule a Visit" (RULE 3)
+  }, []);
 
-  const handleSignupClick = () => {
-    navigate("/auth");
-  };
+  const handleSignupClick = useCallback(() => {
+    // No-op: auth is only triggered by "Schedule a Visit" (RULE 3)
+  }, []);
 
-  const handleNavigate = (page: string) => {
+  const handleAuthSuccess = useCallback((name: string, email: string) => {
+    login(name, email);
+    setShowAuthModal(false);
+  }, [login]);
+
+  const handleLogout = useCallback(() => {
+    logout();
+    navigate("/");
+  }, [logout, navigate]);
+
+  const handleNavigate = useCallback((page: string) => {
     const routeMap: Record<string, string> = {
-      home: "/home",
+      home: "/",
       listings: "/properties",
       about: "/about",
       contact: "/contact",
     };
-    navigate(routeMap[page] || "/home");
-  };
+    navigate(routeMap[page] || "/");
+  }, [navigate]);
 
   const path = location.pathname;
-  const currentPage = path === "/home" ? "home" :
+  const currentPage = path === "/" ? "home" :
     path.startsWith("/properties") ? "listings" :
     path.startsWith("/about") ? "about" :
     path.startsWith("/contact") ? "contact" : "home";
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA]">
-      <Navbar
-        userName={user?.name ?? null}
-        onLoginClick={handleLoginClick}
-        onSignupClick={handleSignupClick}
-        onLogout={() => {
-          logout();
-          navigate("/");
-        }}
-        currentPage={currentPage}
-        onNavigate={handleNavigate}
-      />
-      <div className="pt-16">
-        <Outlet />
+    <>
+      <div className="min-h-screen bg-[#F5F7FA]">
+        <Navbar
+          userName={user?.name ?? null}
+          onLoginClick={handleLoginClick}
+          onSignupClick={handleSignupClick}
+          onLogout={handleLogout}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+        />
+        <div className="pt-16">
+          <Outlet />
+        </div>
       </div>
-    </div>
+      {showAuthModal && (
+        <CustomerAuthModal
+          onLogin={handleAuthSuccess}
+          onClose={() => setShowAuthModal(false)}
+        />
+      )}
+    </>
   );
 }

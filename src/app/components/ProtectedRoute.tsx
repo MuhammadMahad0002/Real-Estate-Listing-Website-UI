@@ -1,11 +1,11 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAdminAuth } from "../../hooks/useAdminAuth";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isLoggedIn } = useAuth();
+  const { isAdminLoggedIn } = useAdminAuth();
 
-  if (!isLoggedIn) {
-    return <Navigate to="/auth" replace />;
+  if (!isAdminLoggedIn) {
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;

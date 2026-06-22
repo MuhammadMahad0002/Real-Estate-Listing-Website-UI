@@ -1,16 +1,16 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAdminAuth } from "../../hooks/useAdminAuth";
 import { AdminPanel } from "./AdminPanel";
 
 export default function AdminPanelWrapper() {
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
+  const { adminName, logoutAdmin } = useAdminAuth();
 
   return (
     <AdminPanel
-      userName={user?.name ?? null}
+      userName={adminName ?? null}
       onLogout={() => {
-        logout();
+        logoutAdmin();
         navigate("/");
       }}
       onBack={() => navigate("/")}
