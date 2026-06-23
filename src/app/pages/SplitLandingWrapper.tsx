@@ -1,58 +1,38 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAdminAuth } from "../../hooks/useAdminAuth";
 import { useAuth } from "../../hooks/useAuth";
 import { SplitLanding } from "./SplitLanding";
-import { AdminLoginModal } from "../components/AdminLoginModal";
 
 export default function SplitLandingWrapper() {
   const navigate = useNavigate();
-  const { isAdminLoggedIn, loginAdmin } = useAdminAuth();
-  const { isLoggedIn } = useAuth();
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const { isLoggedIn, user } = useAuth();
   const [initialized, setInitialized] = useState(false);
 
-  // On mount, restore session: admin → dashboard, customer → listings
+  // On mount, restore session
   useEffect(() => {
     if (!initialized) {
       setInitialized(true);
-      if (isAdminLoggedIn) {
-        navigate("/admin", { replace: true });
-      } else if (isLoggedIn) {
-        navigate("/properties", { replace: true });
+      if (isLoggedIn && user) {
+        if (user.role === "admin") {
+          navigate("/admin", { replace: true });
+        } else if (user.role === "visitAgent") {
+          navigate("/visit-agent", { replace: true });
+        } else {
+          navigate("/properties", { replace: true });
+        }
       }
     }
-  }, [initialized, isAdminLoggedIn, isLoggedIn, navigate]);
+  }, [initialized, isLoggedIn, user, navigate]);
 
-  // If sessions are restored by the time we check, show the split screen
-  if ((isAdminLoggedIn || isLoggedIn) && initialized) {
-    // Sessions exist but we don't redirect — the useEffect above already did
-    // This prevents flash of split screen before redirect
+  if (isLoggedIn && initialized) {
     return null;
   }
 
   return (
-    <>
-      <SplitLanding
-        onExplore={() => navigate("/home")}
-        onAdmin={() => {
-          if (isAdminLoggedIn) {
-            navigate("/admin");
-          } else {
-            setShowAdminLogin(true);
-          }
-        }}
-      />
-      {showAdminLogin && (
-        <AdminLoginModal
-          onLogin={(name) => {
-            loginAdmin(name);
-            setShowAdminLogin(false);
-            navigate("/admin");
-          }}
-          onClose={() => setShowAdminLogin(false)}
-        />
-      )}
-    </>
+    <SplitLanding
+      onExplore={() => navigate("/home")}
+      onSignIn={() => navigate("/auth?tab=login")}
+      onSignUp={() => navigate("/auth?tab=signup")}
+    />
   );
 }

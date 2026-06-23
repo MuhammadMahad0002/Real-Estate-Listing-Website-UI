@@ -343,8 +343,10 @@ function ListingPageComponent({ userName, onLoginRequired }: ListingPageProps) {
       {/* Schedule Visit Modal */}
       {scheduleProperty && (
         <ScheduleVisitModal
+          propertyId={scheduleProperty.id?.toString() || ""}
           propertyTitle={scheduleProperty.title}
           propertyLocation={scheduleProperty.location}
+          propertyImage={scheduleProperty.image}
           userName={userName}
           onClose={() => setScheduleProperty(null)}
         />

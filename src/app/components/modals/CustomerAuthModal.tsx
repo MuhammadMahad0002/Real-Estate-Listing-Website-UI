@@ -1,22 +1,21 @@
-import { useState } from "react";
-import { X, Mail, Lock, User, Phone, Eye, EyeOff } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, Mail, Lock, User, Phone, Eye, EyeOff, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-
-import { setCustomerPassword, getCustomerPassword } from "../../../utils/passwordUtils";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface CustomerAuthModalProps {
-  onLogin: (name: string, email: string) => void;
+  onLogin: (role: string) => void;
   onClose: () => void;
   initialTab?: "login" | "signup";
 }
 
 export function CustomerAuthModal({ onLogin, onClose, initialTab }: CustomerAuthModalProps) {
+  const { login, signup, loading, error, clearError } = useAuth();
   const [tab, setTab] = useState<"login" | "signup">(initialTab ?? "login");
 
   // Login fields
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
 
   // Signup fields
@@ -26,59 +25,66 @@ export function CustomerAuthModal({ onLogin, onClose, initialTab }: CustomerAuth
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [localError, setLocalError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Clear error when switching tabs
+  useEffect(() => {
+    setLocalError("");
+    clearError();
+  }, [tab, clearError]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError("");
+    setLocalError("");
 
     if (!loginEmail.trim()) {
-      setLoginError("Email is required.");
+      setLocalError("Email is required.");
       return;
     }
     if (!loginPassword.trim()) {
-      setLoginError("Password is required.");
+      setLocalError("Password is required.");
       return;
     }
 
-    // Verify stored password
-    const storedPassword = getCustomerPassword(loginEmail.trim());
-    if (!storedPassword) {
-      setLoginError("No account found with this email. Please sign up first.");
-      return;
+    const result = await login(loginEmail.trim(), loginPassword);
+    if (result.meta.requestStatus === "fulfilled") {
+      const user = (result as any).payload?.user;
+      onLogin(user?.role || "customer");
     }
-    if (loginPassword !== storedPassword) {
-      setLoginError("Incorrect password. Try again.");
-      return;
-    }
-
-    onLogin(loginEmail.split("@")[0], loginEmail.trim());
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError("");
+    setLocalError("");
 
     if (!fullName.trim()) {
-      setLoginError("Full name is required.");
+      setLocalError("Full name is required.");
       return;
     }
     if (!signupEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signupEmail)) {
-      setLoginError("Enter a valid email address.");
+      setLocalError("Enter a valid email address.");
       return;
     }
-    if (!signupPassword || signupPassword.length < 6) {
-      setLoginError("Password must be at least 6 characters.");
+    if (!signupPassword || signupPassword.length < 8) {
+      setLocalError("Password must be at least 8 characters.");
       return;
     }
     if (signupPassword !== confirmPassword) {
-      setLoginError("Passwords do not match.");
+      setLocalError("Passwords do not match.");
+      return;
+    }
+    if (!phone.trim()) {
+      setLocalError("Phone number is required.");
       return;
     }
 
-    // Store password for future login verification
-    setCustomerPassword(signupEmail.trim(), signupPassword);
-    onLogin(fullName.trim(), signupEmail.trim());
+    const result = await signup(fullName.trim(), signupEmail.trim(), signupPassword, confirmPassword, phone.trim());
+    if (result.meta.requestStatus === "fulfilled") {
+      onLogin("customer");
+    }
   };
+
+  const displayError = error || localError;
 
   return (
     <AnimatePresence>
@@ -121,7 +127,7 @@ export function CustomerAuthModal({ onLogin, onClose, initialTab }: CustomerAuth
             {(["login", "signup"] as const).map((t) => (
               <button
                 key={t}
-                onClick={() => { setTab(t); setLoginError(""); }}
+                onClick={() => { setTab(t); setLocalError(""); }}
                 className="flex-1 py-3.5 text-sm transition-all duration-200 relative"
                 style={{
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -142,9 +148,9 @@ export function CustomerAuthModal({ onLogin, onClose, initialTab }: CustomerAuth
 
           {/* Body */}
           <div className="p-6">
-            {loginError && (
+            {displayError && (
               <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm mb-4">
-                <span style={{ fontFamily: "'Inter', sans-serif" }}>{loginError}</span>
+                <span style={{ fontFamily: "'Inter', sans-serif" }}>{displayError}</span>
               </div>
             )}
 
@@ -206,10 +212,12 @@ export function CustomerAuthModal({ onLogin, onClose, initialTab }: CustomerAuth
 
                   <button
                     type="submit"
-                    className="w-full py-3 rounded-lg text-[#0A1628] text-sm transition-all hover:brightness-110 active:scale-[0.98]"
+                    disabled={loading}
+                    className="w-full py-3 rounded-lg text-[#0A1628] text-sm transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     style={{ background: "#D4A853", fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700 }}
                   >
-                    Sign In
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                    {loading ? "Signing In..." : "Sign In"}
                   </button>
                 </motion.form>
               ) : (
@@ -287,7 +295,7 @@ export function CustomerAuthModal({ onLogin, onClose, initialTab }: CustomerAuth
                         type={showSignupPassword ? "text" : "password"}
                         value={signupPassword}
                         onChange={(e) => setSignupPassword(e.target.value)}
-                        placeholder="Minimum 6 characters"
+                        placeholder="Minimum 8 characters"
                         className="flex-1 bg-transparent outline-none text-sm text-gray-800 placeholder-gray-400"
                         style={{ fontFamily: "'Inter', sans-serif" }}
                       />
@@ -320,10 +328,12 @@ export function CustomerAuthModal({ onLogin, onClose, initialTab }: CustomerAuth
 
                   <button
                     type="submit"
-                    className="w-full py-3 rounded-lg text-[#0A1628] text-sm transition-all hover:brightness-110 active:scale-[0.98]"
+                    disabled={loading}
+                    className="w-full py-3 rounded-lg text-[#0A1628] text-sm transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     style={{ background: "#D4A853", fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700 }}
                   >
-                    Create Account
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                    {loading ? "Creating Account..." : "Create Account"}
                   </button>
                 </motion.form>
               )}

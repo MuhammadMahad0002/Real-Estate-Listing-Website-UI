@@ -1,78 +1,87 @@
-import { useState } from "react";
-import { Eye, EyeOff, Home, Mail, Lock, User, Phone } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Eye, EyeOff, Home, Mail, Lock, User, Phone, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface AuthPageProps {
-  onLogin: (name: string) => void;
+  activeTab?: "login" | "signup";
 }
 
-interface FormErrors {
-  fullName?: string;
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-  phone?: string;
-}
-
-export function AuthPage({ onLogin }: AuthPageProps) {
-  const [tab, setTab] = useState<"login" | "signup">("login");
+export function AuthPage({ activeTab = "login" }: AuthPageProps) {
+  const navigate = useNavigate();
+  const { login, signup, loading, error, clearError } = useAuth();
+  const [tab, setTab] = useState<"login" | "signup">(activeTab);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [localError, setLocalError] = useState("");
+  const [signupSuccess, setSignupSuccess] = useState(false);
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const [loginErrors, setLoginErrors] = useState<FormErrors>({});
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
-  const [signupErrors, setSignupErrors] = useState<FormErrors>({});
 
-  const validateEmail = (v: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "" : "Enter a valid email address.";
+  useEffect(() => {
+    setTab(activeTab);
+  }, [activeTab]);
 
-  const validateLogin = () => {
-    const e: FormErrors = {};
-    if (!loginEmail) e.email = "Email is required.";
-    else if (validateEmail(loginEmail)) e.email = validateEmail(loginEmail);
-    if (!loginPassword) e.password = "Password is required.";
-    else if (loginPassword.length < 6) e.password = "Minimum 6 characters.";
-    setLoginErrors(e);
-    return Object.keys(e).length === 0;
-  };
+  useEffect(() => {
+    setLocalError("");
+    clearError();
+    setSignupSuccess(false);
+  }, [tab, clearError]);
 
-  const validateSignup = () => {
-    const e: FormErrors = {};
-    if (!fullName.trim()) e.fullName = "Full name is required.";
-    if (!email) e.email = "Email is required.";
-    else if (validateEmail(email)) e.email = validateEmail(email);
-    if (!password) e.password = "Password is required.";
-    else if (password.length < 8) e.password = "Minimum 8 characters.";
-    if (!confirmPassword) e.confirmPassword = "Please confirm your password.";
-    else if (confirmPassword !== password)
-      e.confirmPassword = "Passwords do not match.";
-    if (!phone.trim()) e.phone = "Phone number is required.";
-    else if (!/^(\+92|0)[0-9]{10}$/.test(phone.replace(/\s/g, "")))
-      e.phone = "Enter a valid Pakistani mobile number.";
-    setSignupErrors(e);
-    return Object.keys(e).length === 0;
-  };
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateLogin()) {
-      onLogin(loginEmail.split("@")[0]);
+    setLocalError("");
+
+    if (!loginEmail.trim()) { setLocalError("Email is required."); return; }
+    if (!loginPassword.trim()) { setLocalError("Password is required."); return; }
+
+    const result = await login(loginEmail.trim(), loginPassword);
+    if (result.meta.requestStatus === "fulfilled") {
+      const user = (result as any).payload?.user;
+      if (user?.role === "admin") navigate("/admin");
+      else if (user?.role === "visitAgent") navigate("/visit-agent");
+      else navigate("/properties");
     }
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateSignup()) {
-      onLogin(fullName);
+    setLocalError("");
+
+    if (!fullName.trim()) { setLocalError("Full name is required."); return; }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setLocalError("Enter a valid email address.");
+      return;
+    }
+    if (!password || password.length < 8) {
+      setLocalError("Password must be at least 8 characters.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setLocalError("Passwords do not match.");
+      return;
+    }
+    if (!phone.trim()) {
+      setLocalError("Phone number is required.");
+      return;
+    }
+
+    const result = await signup(fullName.trim(), email.trim(), password, confirmPassword, phone.trim());
+    if (result.meta.requestStatus === "fulfilled") {
+      setSignupSuccess(true);
+      setTab("login");
     }
   };
+
+  const displayError = error || localError;
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -132,6 +141,21 @@ export function AuthPage({ onLogin }: AuthPageProps) {
           </div>
 
           <div className="p-8">
+            {signupSuccess && (
+              <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm mb-4">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+                <span style={{ fontFamily: "'Inter', sans-serif" }}>Account created! Please login.</span>
+              </div>
+            )}
+
+            {displayError && (
+              <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm mb-4">
+                <span style={{ fontFamily: "'Inter', sans-serif" }}>{displayError}</span>
+              </div>
+            )}
+
             <AnimatePresence mode="wait">
               {tab === "login" ? (
                 <motion.form
@@ -160,7 +184,6 @@ export function AuthPage({ onLogin }: AuthPageProps) {
                     value={loginEmail}
                     onChange={setLoginEmail}
                     placeholder="you@example.com"
-                    error={loginErrors.email}
                   />
                   <PasswordField
                     label="Password"
@@ -169,29 +192,20 @@ export function AuthPage({ onLogin }: AuthPageProps) {
                     show={showPassword}
                     onToggle={() => setShowPassword(!showPassword)}
                     placeholder="Enter your password"
-                    error={loginErrors.password}
                   />
-
-                  <div className="flex justify-end mb-6">
-                    <button
-                      type="button"
-                      className="text-sm text-[#D4A853] hover:text-[#B8893A] transition-colors"
-                      style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500 }}
-                    >
-                      Forgot Password?
-                    </button>
-                  </div>
 
                   <button
                     type="submit"
-                    className="w-full py-3 rounded-lg text-[#0A1628] transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
+                    disabled={loading}
+                    className="w-full py-3 rounded-lg text-[#0A1628] transition-all duration-200 hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     style={{
                       background: "#D4A853",
                       fontFamily: "'Plus Jakarta Sans', sans-serif",
                       fontWeight: 700,
                     }}
                   >
-                    Login to Account
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                    {loading ? "Signing In..." : "Login to Account"}
                   </button>
 
                   <p className="text-center text-sm text-gray-500 mt-5">
@@ -233,7 +247,6 @@ export function AuthPage({ onLogin }: AuthPageProps) {
                     value={fullName}
                     onChange={setFullName}
                     placeholder="Muhammad Ali Khan"
-                    error={signupErrors.fullName}
                   />
                   <Field
                     icon={<Mail className="w-4 h-4" />}
@@ -242,7 +255,6 @@ export function AuthPage({ onLogin }: AuthPageProps) {
                     value={email}
                     onChange={setEmail}
                     placeholder="you@example.com"
-                    error={signupErrors.email}
                   />
                   <PasswordField
                     label="Password"
@@ -251,7 +263,6 @@ export function AuthPage({ onLogin }: AuthPageProps) {
                     show={showPassword}
                     onToggle={() => setShowPassword(!showPassword)}
                     placeholder="Minimum 8 characters"
-                    error={signupErrors.password}
                   />
                   <PasswordField
                     label="Confirm Password"
@@ -260,7 +271,6 @@ export function AuthPage({ onLogin }: AuthPageProps) {
                     show={showConfirm}
                     onToggle={() => setShowConfirm(!showConfirm)}
                     placeholder="Re-enter your password"
-                    error={signupErrors.confirmPassword}
                   />
                   <Field
                     icon={<Phone className="w-4 h-4" />}
@@ -269,19 +279,20 @@ export function AuthPage({ onLogin }: AuthPageProps) {
                     value={phone}
                     onChange={setPhone}
                     placeholder="+92 300 1234567"
-                    error={signupErrors.phone}
                   />
 
                   <button
                     type="submit"
-                    className="w-full py-3 rounded-lg text-[#0A1628] transition-all duration-200 hover:brightness-110 active:scale-[0.98] mt-2"
+                    disabled={loading}
+                    className="w-full py-3 rounded-lg text-[#0A1628] transition-all duration-200 hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
                     style={{
                       background: "#D4A853",
                       fontFamily: "'Plus Jakarta Sans', sans-serif",
                       fontWeight: 700,
                     }}
                   >
-                    Create Account
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                    {loading ? "Creating Account..." : "Create Account"}
                   </button>
 
                   <p className="text-center text-sm text-gray-500 mt-5">
@@ -301,6 +312,17 @@ export function AuthPage({ onLogin }: AuthPageProps) {
           </div>
         </div>
       </motion.div>
+
+      {/* Back to home */}
+      <div className="absolute top-6 right-8 z-20">
+        <button
+          onClick={() => navigate("/")}
+          className="text-white/60 hover:text-white text-sm transition-colors flex items-center gap-1.5"
+          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 500 }}
+        >
+          ← Back to Home
+        </button>
+      </div>
     </div>
   );
 }
@@ -312,7 +334,6 @@ function Field({
   value,
   onChange,
   placeholder,
-  error,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -320,7 +341,6 @@ function Field({
   value: string;
   onChange: (v: string) => void;
   placeholder: string;
-  error?: string;
 }) {
   return (
     <div className="mb-4">
@@ -330,11 +350,7 @@ function Field({
       >
         {label}
       </label>
-      <div
-        className={`flex items-center gap-2 border rounded-lg px-3 py-2.5 transition-colors ${
-          error ? "border-red-400 bg-red-50" : "border-gray-200 bg-[#F5F7FA] focus-within:border-[#D4A853]"
-        }`}
-      >
+      <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5 bg-[#F5F7FA] focus-within:border-[#D4A853] transition-colors">
         <span className="text-gray-400 flex-shrink-0">{icon}</span>
         <input
           type={type}
@@ -345,11 +361,6 @@ function Field({
           style={{ fontFamily: "'Inter', sans-serif" }}
         />
       </div>
-      {error && (
-        <p className="text-red-500 text-xs mt-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-          {error}
-        </p>
-      )}
     </div>
   );
 }
@@ -361,7 +372,6 @@ function PasswordField({
   show,
   onToggle,
   placeholder,
-  error,
 }: {
   label: string;
   value: string;
@@ -369,7 +379,6 @@ function PasswordField({
   show: boolean;
   onToggle: () => void;
   placeholder: string;
-  error?: string;
 }) {
   return (
     <div className="mb-4">
@@ -379,11 +388,7 @@ function PasswordField({
       >
         {label}
       </label>
-      <div
-        className={`flex items-center gap-2 border rounded-lg px-3 py-2.5 transition-colors ${
-          error ? "border-red-400 bg-red-50" : "border-gray-200 bg-[#F5F7FA] focus-within:border-[#D4A853]"
-        }`}
-      >
+      <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5 bg-[#F5F7FA] focus-within:border-[#D4A853] transition-colors">
         <Lock className="w-4 h-4 text-gray-400 flex-shrink-0" />
         <input
           type={show ? "text" : "password"}
@@ -401,11 +406,6 @@ function PasswordField({
           {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
         </button>
       </div>
-      {error && (
-        <p className="text-red-500 text-xs mt-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-          {error}
-        </p>
-      )}
     </div>
   );
 }

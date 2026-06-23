@@ -10,6 +10,8 @@ const SplitLanding = lazy(() => import("./pages/SplitLandingWrapper"));
 const HomePage = lazy(() => import("./pages/HomePageWrapper"));
 const ListingPage = lazy(() => import("./pages/ListingPageWrapper"));
 const AdminPanel = lazy(() => import("./pages/AdminPanelWrapper"));
+const AuthPage = lazy(() => import("./pages/AuthPageWrapper"));
+const VisitAgentPanel = lazy(() => import("./pages/VisitAgentPanelWrapper"));
 const NavbarLayout = lazy(() => import("./layouts/NavbarLayout"));
 const SimplePage = lazy(() => import("./pages/SimplePage"));
 
@@ -38,14 +40,26 @@ export default function App() {
             <Route path="/contact" element={<NavbarLayout />}>
               <Route index element={<SimplePage />} />
             </Route>
+            <Route path="/auth" element={<AuthPage />} />
+
             <Route
               path="/admin"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute allowedRoles={['admin']}>
                   <AdminPanel />
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/visit-agent"
+              element={
+                <ProtectedRoute allowedRoles={['visitAgent']}>
+                  <VisitAgentPanel />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
@@ -54,8 +68,10 @@ export default function App() {
       {/* ScheduleVisitModal rendered at App level via ModalContext */}
       {scheduleProperty && (
         <ScheduleVisitModal
+          propertyId={scheduleProperty.id?.toString() || ""}
           propertyTitle={scheduleProperty.title}
           propertyLocation={scheduleProperty.location}
+          propertyImage={scheduleProperty.image}
           userName={null}
           onClose={closeModal}
         />

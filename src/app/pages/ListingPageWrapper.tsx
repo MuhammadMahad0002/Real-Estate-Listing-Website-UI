@@ -6,7 +6,7 @@ import { ScheduleVisitModal } from "../components/modals/ScheduleVisitModal";
 import type { Property } from "../data/data";
 
 export default function ListingPageWrapper() {
-  const { user, login } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [scheduleProperty, setScheduleProperty] = useState<Property | null>(null);
   // Store the property that triggered auth so we can schedule after login
@@ -17,15 +17,14 @@ export default function ListingPageWrapper() {
     setShowAuthModal(true);
   }, []);
 
-  const handleAuthSuccess = useCallback((name: string, email: string) => {
-    login(name, email);
+  const handleAuthSuccess = useCallback((_role: string) => {
     setShowAuthModal(false);
     // After successful auth, immediately open the schedule modal for the pending property
     if (pendingPropertyRef.current) {
       setScheduleProperty(pendingPropertyRef.current);
       pendingPropertyRef.current = null;
     }
-  }, [login]);
+  }, []);
 
   const handleScheduleClose = useCallback(() => {
     setScheduleProperty(null);
@@ -34,7 +33,7 @@ export default function ListingPageWrapper() {
   return (
     <>
       <ListingPage
-        userName={user?.name ?? null}
+        userName={user?.fullName ?? null}
         onLoginRequired={handleLoginRequired}
       />
       {showAuthModal && (
@@ -48,9 +47,11 @@ export default function ListingPageWrapper() {
       )}
       {scheduleProperty && (
         <ScheduleVisitModal
+          propertyId={scheduleProperty.id?.toString() || ""}
           propertyTitle={scheduleProperty.title}
           propertyLocation={scheduleProperty.location}
-          userName={user?.name ?? null}
+          propertyImage={scheduleProperty.image}
+          userName={user?.fullName ?? null}
           onClose={handleScheduleClose}
         />
       )}

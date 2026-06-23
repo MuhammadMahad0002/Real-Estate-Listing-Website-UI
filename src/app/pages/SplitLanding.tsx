@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Home, LayoutDashboard } from "lucide-react";
+import { ArrowRight, Home, LogIn, UserPlus } from "lucide-react";
 
 interface SplitLandingProps {
   onExplore: () => void;
-  onAdmin: () => void;
+  onSignIn: () => void;
+  onSignUp: () => void;
 }
 
 type HoveredPanel = "left" | "right" | null;
@@ -17,7 +18,7 @@ const PANEL_LEFT_IMG =
 const PANEL_RIGHT_IMG =
   "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1400&h=1080&fit=crop&auto=format&q=85";
 
-export function SplitLanding({ onExplore, onAdmin }: SplitLandingProps) {
+export function SplitLanding({ onExplore, onSignIn, onSignUp }: SplitLandingProps) {
   const [hovered, setHovered] = useState<HoveredPanel>(null);
 
   return (
@@ -30,7 +31,7 @@ export function SplitLanding({ onExplore, onAdmin }: SplitLandingProps) {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.65, ease: "easeOut" }}
-        className="absolute top-0 left-0 right-0 z-30 flex flex-col items-center justify-center pt-8 pb-6 pointer-events-none"
+        className="absolute top-0 left-0 right-0 z-30 flex flex-col items-center justify-center pt-8 pb-6"
         style={{
           background:
             "linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.28) 70%, transparent 100%)",
@@ -64,6 +65,26 @@ export function SplitLanding({ onExplore, onAdmin }: SplitLandingProps) {
         </p>
       </motion.header>
 
+      {/* ─── AUTH BUTTONS (top-right) ─────────────── */}
+      <div className="absolute top-6 right-6 z-40 flex items-center gap-2">
+        <button
+          onClick={(e) => { e.stopPropagation(); onSignIn(); }}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-white/30 text-white text-sm hover:bg-white/10 transition-all"
+          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, backdropFilter: "blur(4px)" }}
+        >
+          <LogIn className="w-3.5 h-3.5" />
+          Sign In
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); onSignUp(); }}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[#0A1628] text-sm transition-all hover:brightness-110"
+          style={{ background: "#D4A853", fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700 }}
+        >
+          <UserPlus className="w-3.5 h-3.5" />
+          Sign Up
+        </button>
+      </div>
+
       {/* ─── PANELS ─────────────────────────────────── */}
       <div className="flex flex-col md:flex-row w-full h-full">
 
@@ -93,7 +114,7 @@ export function SplitLanding({ onExplore, onAdmin }: SplitLandingProps) {
             />
           </div>
 
-          {/* Overlay – gradient anchored bottom-left for text legibility */}
+          {/* Overlay */}
           <div
             className="absolute inset-0"
             style={{
@@ -147,7 +168,7 @@ export function SplitLanding({ onExplore, onAdmin }: SplitLandingProps) {
           style={{ minHeight: "50vh" }}
           onMouseEnter={() => setHovered("right")}
           onMouseLeave={() => setHovered(null)}
-          onClick={onAdmin}
+          onClick={onSignIn}
         >
           {/* Photo */}
           <div className="absolute inset-0 bg-[#0a1628]">
@@ -179,11 +200,11 @@ export function SplitLanding({ onExplore, onAdmin }: SplitLandingProps) {
           <PanelContent
             side="right"
             hovered={hovered === "right"}
-            icon={<LayoutDashboard style={{ width: 14, height: 14 }} />}
+            icon={<LogIn style={{ width: 14, height: 14 }} />}
             label="For Agents & Owners"
-            headline={<>List &amp;<br />Manage</>}
-            sub="Add your properties, track inquiries, and manage all your listings from one powerful dashboard."
-            cta="Go to Admin Panel"
+            headline={<>Sign In<br />to Manage</>}
+            sub="Access your dashboard, manage listings, track visits, and handle all your property operations from one place."
+            cta="Sign In → Dashboard"
           />
         </motion.div>
       </div>
@@ -296,7 +317,7 @@ function PanelContent({
         </div>
       </motion.div>
 
-      {/* Headline – large, high contrast white with text-shadow for readability */}
+      {/* Headline */}
       <motion.h2
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -313,7 +334,7 @@ function PanelContent({
         {headline}
       </motion.h2>
 
-      {/* Subtext – solid white background-blurred pill for guaranteed legibility */}
+      {/* Subtext */}
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

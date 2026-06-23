@@ -1,14 +1,21 @@
 import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { loginUser, logoutUser } from "../store/authSlice";
+import { loginUser, signupUser, logoutUser, clearAuthError } from "../store/authSlice";
 
 export function useAuth() {
   const dispatch = useAppDispatch();
-  const { user, isLoggedIn } = useAppSelector((state) => state.auth);
+  const { user, isLoggedIn, loading, error } = useAppSelector((state) => state.auth);
 
   const login = useCallback(
-    (name: string, email: string) => {
-      dispatch(loginUser({ name, email }));
+    (email: string, password: string) => {
+      return dispatch(loginUser({ email, password }));
+    },
+    [dispatch]
+  );
+
+  const signup = useCallback(
+    (fullName: string, email: string, password: string, confirmPassword: string, phone: string) => {
+      return dispatch(signupUser({ fullName, email, password, confirmPassword, phone }));
     },
     [dispatch]
   );
@@ -17,5 +24,9 @@ export function useAuth() {
     dispatch(logoutUser());
   }, [dispatch]);
 
-  return { user, isLoggedIn, login, logout };
+  const clearError = useCallback(() => {
+    dispatch(clearAuthError());
+  }, [dispatch]);
+
+  return { user, isLoggedIn, loading, error, login, signup, logout, clearError };
 }
