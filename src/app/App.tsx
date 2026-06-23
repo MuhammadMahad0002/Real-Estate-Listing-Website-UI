@@ -1,17 +1,17 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Loader } from "./components/Loader";
-import { ErrorBoundary } from "./components/ErrorBoundary";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Loader } from "./components/common/Loader";
+import { ErrorBoundary } from "./components/common/ErrorBoundary";
+import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { useModal } from "../context/ModalContext";
-import { ScheduleVisitModal } from "./components/ScheduleVisitModal";
+import { ScheduleVisitModal } from "./components/modals/ScheduleVisitModal";
 
-const SplitLanding = lazy(() => import("./components/SplitLandingWrapper"));
-const HomePage = lazy(() => import("./components/HomePageWrapper"));
-const ListingPage = lazy(() => import("./components/ListingPageWrapper"));
-const AdminPanel = lazy(() => import("./components/AdminPanelWrapper"));
-const NavbarLayout = lazy(() => import("./components/NavbarLayout"));
-const SimplePage = lazy(() => import("./components/SimplePage"));
+const SplitLanding = lazy(() => import("./pages/SplitLandingWrapper"));
+const HomePage = lazy(() => import("./pages/HomePageWrapper"));
+const ListingPage = lazy(() => import("./pages/ListingPageWrapper"));
+const AdminPanel = lazy(() => import("./pages/AdminPanelWrapper"));
+const NavbarLayout = lazy(() => import("./layouts/NavbarLayout"));
+const SimplePage = lazy(() => import("./pages/SimplePage"));
 
 export default function App() {
   const { scheduleProperty, closeModal } = useModal();

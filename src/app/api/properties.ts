@@ -1,4 +1,4 @@
-import { PROPERTIES, Property } from "../components/data";
+import { PROPERTIES, Property } from "../data/data";
 
 export function fetchProperties(): Promise<Property[]> {
   return new Promise((resolve) => {

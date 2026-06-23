@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
-import type { Property } from "../app/components/data";
+import type { Property } from "../app/data/data";
 
 interface ModalContextValue {
   scheduleProperty: Property | null;
